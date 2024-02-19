@@ -479,14 +479,11 @@ void SX127x::clearChannelScanAction() {
   this->clearDio0Action();
 }
 
-void SX127x::setFifoEmptyAction(void (*func)(void)) {
-  // set DIO1 to the FIFO empty event (the register setting is done in startTransmit)
-  setDio1Action(func, this->mod->hal->GpioInterruptRising);
-}
+void SX127x::setFifoEmptyAction(void (*func)(void)) 
+{ // set DIO1 to the FIFO empty event (the register setting is done in startTransmit)
+  setDio1Action(func, this->mod->hal->GpioInterruptRising); }
 
-void SX127x::clearFifoEmptyAction() {
-  clearDio1Action();
-}
+void SX127x::clearFifoEmptyAction() { clearDio1Action(); }
 
 void SX127x::setFifoFullAction(void (*func)(void)) {
   // set the interrupt
@@ -1373,7 +1370,11 @@ uint16_t SX127x::getIRQFlags(void)
 
 bool SX127x::getFifoEmpty(void)
 { if(getActiveModem() != RADIOLIB_SX127X_FSK_OOK) return 0;
-  return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS) & RADIOLIB_SX127X_FLAG_FIFO_EMPTY; }
+  return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS_2) & RADIOLIB_SX127X_FLAG_FIFO_EMPTY; }
+
+bool SX127x::getFifoFull(void)
+{ if(getActiveModem() != RADIOLIB_SX127X_FSK_OOK) return 0;
+  return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS_2) & RADIOLIB_SX127X_FLAG_FIFO_FULL; }
 
 uint8_t SX127x::getModemStatus(void)
 { // check active modem
