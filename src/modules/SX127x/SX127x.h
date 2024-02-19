@@ -1108,7 +1108,13 @@ class SX127x: public PhysicalLayer {
       In FSK mode, this is the contents of SX127X_REG_IRQ_FLAGS_2 (MSB) and SX127X_REG_IRQ_FLAGS_1 (LSB) registers.
       \returns IRQ flags.
     */
-    uint16_t getIRQFlags();
+    uint16_t getIRQFlags(void);
+
+    /*!
+      \brief Reads currently the FIFO-empty flag (FSK mode only)
+      \returns IRQ flags.
+    */
+    bool getFifoEmpty(void);
 
     /*!
       \brief Reads modem status. Only available in LoRa mode.

@@ -1359,45 +1359,37 @@ int16_t SX127x::setEncoding(uint8_t encoding) {
   }
 }
 
-uint16_t SX127x::getIRQFlags() {
-  // check active modem
-  if(getActiveModem() == RADIOLIB_SX127X_LORA) {
-    // LoRa, just 8-bit value
-    return((uint16_t)this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS));
-
-  } else {
-    // FSK, the IRQ flags are 16 bits in total
+uint16_t SX127x::getIRQFlags(void)
+{ // check active modem
+  if(getActiveModem() == RADIOLIB_SX127X_LORA)
+  { // LoRa, just 8-bit value
+    return (uint16_t)this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS); }
+  else
+  { // FSK, the IRQ flags are 16 bits in total
     uint16_t flags = ((uint16_t)this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS_2)) << 8;
     flags |= (uint16_t)this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS_1);
-    return(flags);
-  }
-
+    return flags; }
 }
 
-uint8_t SX127x::getModemStatus() {
-  // check active modem
-  if(getActiveModem() != RADIOLIB_SX127X_LORA) {
-    return(0x00);
-  }
+bool SX127x::getFifoEmpty(void)
+{ if(getActiveModem() != RADIOLIB_SX127X_FSK_OOK) return 0;
+  return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS) & RADIOLIB_SX127X_FLAG_FIFO_EMPTY; }
 
+uint8_t SX127x::getModemStatus(void)
+{ // check active modem
+  if(getActiveModem() != RADIOLIB_SX127X_LORA) return(0x00);
   // read the register
-  return(this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_MODEM_STAT));
-}
+  return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_MODEM_STAT); }
 
-void SX127x::setRfSwitchPins(uint32_t rxEn, uint32_t txEn) {
-  this->mod->setRfSwitchPins(rxEn, txEn);
-}
+void SX127x::setRfSwitchPins(uint32_t rxEn, uint32_t txEn) {  this->mod->setRfSwitchPins(rxEn, txEn); }
 
-void SX127x::setRfSwitchTable(const uint32_t (&pins)[Module::RFSWITCH_MAX_PINS], const Module::RfSwitchMode_t table[]) {
-  this->mod->setRfSwitchTable(pins, table);
-}
+void SX127x::setRfSwitchTable(const uint32_t (&pins)[Module::RFSWITCH_MAX_PINS], const Module::RfSwitchMode_t table[])
+{ this->mod->setRfSwitchTable(pins, table); }
 
-uint8_t SX127x::randomByte() {
-  // check active modem
+uint8_t SX127x::randomByte()
+{ // check active modem
   uint8_t rssiValueReg = RADIOLIB_SX127X_REG_RSSI_WIDEBAND;
-  if(getActiveModem() == RADIOLIB_SX127X_FSK_OOK) {
-    rssiValueReg = RADIOLIB_SX127X_REG_RSSI_VALUE_FSK;
-  }
+  if(getActiveModem() == RADIOLIB_SX127X_FSK_OOK) rssiValueReg = RADIOLIB_SX127X_REG_RSSI_VALUE_FSK;
 
   // set mode to Rx
   setMode(RADIOLIB_SX127X_RX);
@@ -1407,15 +1399,13 @@ uint8_t SX127x::randomByte() {
 
   // read RSSI value 8 times, always keep just the least significant bit
   uint8_t randByte = 0x00;
-  for(uint8_t i = 0; i < 8; i++) {
+  for(uint8_t i = 0; i < 8; i++)
     randByte |= ((this->mod->SPIreadRegister(rssiValueReg) & 0x01) << i);
-  }
 
   // set mode to standby
   setMode(RADIOLIB_SX127X_STANDBY);
 
-  return(randByte);
-}
+  return randByte; }
 
 int16_t SX127x::getChipVersion() {
   return(this->mod->SPIgetRegValue(RADIOLIB_SX127X_REG_VERSION));
