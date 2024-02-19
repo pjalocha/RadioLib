@@ -1126,7 +1126,7 @@ class SX127x: public PhysicalLayer {
       \brief Reads one byte from the FIFO (FSK mode only)
       \returns the byte read
     */
-    uint8_t SX127x::getFifoByte(void);
+    uint8_t getFifoByte(void);
 
     /*!
       \brief Reads modem status. Only available in LoRa mode.
