@@ -1376,6 +1376,10 @@ bool SX127x::getFifoFull(void)
 { if(getActiveModem() != RADIOLIB_SX127X_FSK_OOK) return 0;
   return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_IRQ_FLAGS_2) & RADIOLIB_SX127X_FLAG_FIFO_FULL; }
 
+uint8_t SX127x::getFifoByte(void)
+{ if(getActiveModem() != RADIOLIB_SX127X_FSK_OOK) return 0;
+  return this->mod->SPIreadRegister(RADIOLIB_SX127X_REG_FIFO); }
+
 uint8_t SX127x::getModemStatus(void)
 { // check active modem
   if(getActiveModem() != RADIOLIB_SX127X_LORA) return(0x00);

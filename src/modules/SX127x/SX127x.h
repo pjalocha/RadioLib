@@ -1111,16 +1111,22 @@ class SX127x: public PhysicalLayer {
     uint16_t getIRQFlags(void);
 
     /*!
-      \brief Reads currently the FIFO-empty flag (FSK mode only)
+      \brief Reads the FIFO-empty flag (FSK mode only)
       \returns the FIFO-empty flag.
     */
     bool getFifoEmpty(void);
 
     /*!
-      \brief Reads currently the FIFO-full flag (FSK mode only)
+      \brief Reads the FIFO-full flag (FSK mode only)
       \returns the FIFO-full flag.
     */
     bool getFifoFull(void);
+
+    /*!
+      \brief Reads one byte from the FIFO (FSK mode only)
+      \returns the byte read
+    */
+    uint8_t SX127x::getFifoByte(void);
 
     /*!
       \brief Reads modem status. Only available in LoRa mode.
