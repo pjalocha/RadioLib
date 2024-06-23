@@ -1023,10 +1023,11 @@ int16_t SX127x::setSyncWord(uint8_t* syncWord, size_t len) {
 
     RADIOLIB_CHECK_RANGE(len, 1, 8, RADIOLIB_ERR_INVALID_SYNC_WORD);
 
+    int BadSync=0;
     // sync word must not contain value 0x00
     for(size_t i = 0; i < len; i++) {
       if(syncWord[i] == 0x00) {
-        return(RADIOLIB_ERR_INVALID_SYNC_WORD);
+        BadSync++; // return(RADIOLIB_ERR_INVALID_SYNC_WORD);
       }
     }
 
@@ -1037,7 +1038,7 @@ int16_t SX127x::setSyncWord(uint8_t* syncWord, size_t len) {
 
     // set sync word
     this->mod->SPIwriteRegisterBurst(RADIOLIB_SX127X_REG_SYNC_VALUE_1, syncWord, len);
-    return(RADIOLIB_ERR_NONE);
+    return(BadSync>0?RADIOLIB_ERR_INVALID_SYNC_WORD:RADIOLIB_ERR_NONE);
   
   } else if(modem == RADIOLIB_SX127X_LORA) {
     // with length set to 1 and LoRa modem active, assume it is the LoRa sync word
